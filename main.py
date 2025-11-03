@@ -115,7 +115,7 @@ przycisk_four = pygame.rect.Rect(
     szerokosc_przycisku,
     wyskosc_przycisku)
 
-def show_globby (screen:pygame.Surface):
+def show_globby (screen:pygame.Surface, event_l):
     global tryb_gry, wylacz_gre
 
     screen.fill('black')
@@ -147,26 +147,33 @@ def show_globby (screen:pygame.Surface):
     cdl_rect = cdl_word_render.get_rect(center=przycisk_CDL.center)
     screen.blit(cdl_word_render, cdl_rect, )
 
-    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-        possition = pygame.mouse.get_pos()
-        if przycisk_game.collidepoint(possition):
-            tryb_gry = 'game'
-            print('ziemniak')
+    for event in event_l:
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            possition = pygame.mouse.get_pos()
+            if przycisk_game.collidepoint(possition):
+                tryb_gry = 'game'
+                print('ziemniak')
 
-    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-        possition = pygame.mouse.get_pos()
-        if przycisk_esc.collidepoint(possition):
-            wylacz_gre = True
-            print('ziemniak')
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            possition = pygame.mouse.get_pos()
+            if przycisk_esc.collidepoint(possition):
+                wylacz_gre = True
+                print('ziemniak')
 
-    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-        possition = pygame.mouse.get_pos()
-        if przycisk_CDL.collidepoint(possition):
-           tryb_gry = "CDL"
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            possition = pygame.mouse.get_pos()
+            if przycisk_CDL.collidepoint(possition):
+               tryb_gry = "CDL"
+
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            possition = pygame.mouse.get_pos()
+            if przycisk_CAN.collidepoint(possition):
+                tryb_gry = 'name'
+                print('ziemniak')
 
 HP_left = 6
 HP_right = 6
-def choose_difficulti_level(screen):
+def choose_difficulti_level(screen, event_l):
     global predkosc_y,predkosc_x,HP_left,HP_right,tryb_gry
 
     screen.fill('black')
@@ -201,28 +208,42 @@ def choose_difficulti_level(screen):
     # inicjowanie leveli
     predkosc_baza_x = random.choice([-1, 1])
     predkosc_baza_y = random.randint(-1, 1)
-    if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-        possition = pygame.mouse.get_pos()
 
-        if przycisk_one.collidepoint(possition):
-            predkosc_x = predkosc_baza_x * 4
-            predkosc_y = predkosc_baza_y * 4
-            tryb_gry = 'lobby'
+    for event in event_l:
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            possition = pygame.mouse.get_pos()
 
-        elif przycisk_two.collidepoint(possition):
-            predkosc_x = predkosc_baza_x * 5
-            predkosc_y = predkosc_baza_y * 5
-            tryb_gry = 'lobby'
+            if przycisk_one.collidepoint(possition):
+                predkosc_x = predkosc_baza_x * 4
+                predkosc_y = predkosc_baza_y * 4
+                tryb_gry = 'lobby'
 
-        elif przycisk_three.collidepoint(possition):
-            predkosc_x = predkosc_baza_x * 6
-            predkosc_y = predkosc_baza_y * 6
-            tryb_gry = 'lobby'
+            elif przycisk_two.collidepoint(possition):
+                predkosc_x = predkosc_baza_x * 5
+                predkosc_y = predkosc_baza_y * 5
+                tryb_gry = 'lobby'
 
-        elif przycisk_four.collidepoint(possition):
-            predkosc_x = predkosc_baza_x * 10
-            predkosc_y = predkosc_baza_y * 10
-            tryb_gry = 'lobby'
+            elif przycisk_three.collidepoint(possition):
+                predkosc_x = predkosc_baza_x * 6
+                predkosc_y = predkosc_baza_y * 6
+                tryb_gry = 'lobby'
+
+            elif przycisk_four.collidepoint(possition):
+                predkosc_x = predkosc_baza_x * 10
+                predkosc_y = predkosc_baza_y * 10
+                tryb_gry = 'lobby'
+
+def name (screen, event_l):
+    global tryb_gry
+
+    name_word_render = font2.render("Chose a name", True, 'white')
+    szerokosc_name = name_word_render.get_width()
+    screen.blit(name_word_render, ((SZEROKOSC - szerokosc_name) / 2,100), )
+
+    name_word_render_two = font3.render("click enter to write the second players name and to exit", True, 'white')
+    szerokosc_name_two = name_word_render_two.get_width()
+    screen.blit(name_word_render_two, ((SZEROKOSC - szerokosc_name_two) / 2, 150), )
+
 
 # Ekran widoku gry
 def game(screen):
@@ -321,6 +342,7 @@ def game(screen):
                     points_right += 1
 
 
+
 ##################################################################################################################
 ################================---------------- GŁÓWNA PĘTLA GRY ----------------================################
 ##################################################################################################################
@@ -332,8 +354,10 @@ while wylacz_gre == False:
     zegarek.tick(60)
     screen.fill('black')
 
+    event_l = list(pygame.event.get())
+
     # Obsługa eventów
-    for event in pygame.event.get():
+    for event in event_l:
         if event.type == pygame.QUIT:
             wylacz_gre = True
         if event.type == pygame.KEYDOWN:
@@ -343,10 +367,11 @@ while wylacz_gre == False:
     if tryb_gry == "game":
         game(screen)
     elif tryb_gry == 'lobby':
-        show_globby(screen)
+        show_globby(screen, event_l)
     elif tryb_gry == 'CDL':
-        choose_difficulti_level(screen)
-
+        choose_difficulti_level(screen, event_l)
+    elif tryb_gry == 'CAN':
+        name(screen, event_l)
 
     pygame.display.update()
 
