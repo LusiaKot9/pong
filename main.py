@@ -57,6 +57,12 @@ nazwa_gracza_prawo = "Player 2"
 points_left = 0
 points_right = 0
 
+n_player1 = ''
+n_player2 = ''
+
+p1_name_set = False
+p2_name_set = False
+
 szerokosc_przycisku = 200
 wyskosc_przycisku = 80
 odstepy_miedzy_przyciskami = 30
@@ -112,6 +118,12 @@ przycisk_three = pygame.rect.Rect(
 przycisk_four = pygame.rect.Rect(
     SZEROKOSC - odstep_przycisku_od_sciany - szerokosc_przycisku,
     300,
+    szerokosc_przycisku,
+    wyskosc_przycisku)
+
+przycisk_akcept = pygame.rect.Rect(
+    SZEROKOSC /2 - szerokosc_przycisku,
+    500,
     szerokosc_przycisku,
     wyskosc_przycisku)
 
@@ -234,7 +246,9 @@ def choose_difficulti_level(screen, event_l):
                 tryb_gry = 'lobby'
 
 def name (screen, event_l):
-    global tryb_gry
+    global tryb_gry, n_player1, n_player2
+    global nazwa_gracza_lewo, nazwa_gracza_prawo
+    global p1_name_set, p2_name_set
 
     name_word_render = font2.render("Chose a name", True, 'white')
     szerokosc_name = name_word_render.get_width()
@@ -242,7 +256,55 @@ def name (screen, event_l):
 
     name_word_render_two = font3.render("click enter to write the second players name and to exit", True, 'white')
     szerokosc_name_two = name_word_render_two.get_width()
-    screen.blit(name_word_render_two, ((SZEROKOSC - szerokosc_name_two) / 2, 150), )
+    screen.blit(name_word_render_two, ((SZEROKOSC - szerokosc_name_two) / 2, 200), )
+
+    player_1 = font3.render("player1", True, 'white')
+    szerokosc_1 = player_1.get_width()
+    screen.blit(player_1, (310 + szerokosc_1 / 2, 380), )
+
+    player_2 = font3.render("player2", True, 'white')
+    szerokosc_2 = player_2.get_width()
+    screen.blit(player_2, (680 + szerokosc_2 / 2, 380), )
+
+    pygame.draw.line(screen, "white", (310, 350), (500, 350))
+    pygame.draw.line(screen, "white", (680, 350), (880, 350))
+
+
+    pygame.draw.rect(screen, 'white', przycisk_akcept)
+    akcept_word_render = font3.render("Akcept".upper(), True, 'black')
+    akcept_rect = akcept_word_render.get_rect(center=przycisk_akcept.center)
+    screen.blit(akcept_word_render, akcept_rect, )
+
+    for event in event_l:
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_BACKSPACE:
+                if p1_name_set == False:
+                    n_player1 = n_player1[0:-1]
+                elif p2_name_set == False:
+                    n_player2 = n_player2[0:-1]
+
+            else:
+                n_player1 += event.unicode
+                n_player1 = n_player1[0:10]
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            possition = pygame.mouse.get_pos()
+            if przycisk_akcept.collidepoint(possition):
+                if p1_name_set == False:
+                    nazwa_gracza_lewo = n_player1
+                    p1_name_set = True
+                    print('gotowany ziemniak')
+                else:
+                    nazwa_gracza_prawo = n_player2
+                    p2_name_set = True
+                    tryb_gry = 'lobby'
+    n_PLAYER_1 = font3.render(n_player1, True, 'white')
+    szerokosc_n_p_1 = n_PLAYER_1.get_width()
+    screen.blit(n_PLAYER_1, (310,325) )
+
+
+
+
+
 
 
 # Ekran widoku gry
@@ -354,6 +416,7 @@ while wylacz_gre == False:
     zegarek.tick(60)
     screen.fill('black')
 
+
     event_l = list(pygame.event.get())
 
     # Obsługa eventów
@@ -370,7 +433,7 @@ while wylacz_gre == False:
         show_globby(screen, event_l)
     elif tryb_gry == 'CDL':
         choose_difficulti_level(screen, event_l)
-    elif tryb_gry == 'CAN':
+    elif tryb_gry == 'name':
         name(screen, event_l)
 
     pygame.display.update()
