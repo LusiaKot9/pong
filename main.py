@@ -254,7 +254,7 @@ def name (screen, event_l):
     szerokosc_name = name_word_render.get_width()
     screen.blit(name_word_render, ((SZEROKOSC - szerokosc_name) / 2,100), )
 
-    name_word_render_two = font3.render("click enter to write the second players name and to exit", True, 'white')
+    name_word_render_two = font3.render("click akcept to write the second players name and to exit", True, 'white')
     szerokosc_name_two = name_word_render_two.get_width()
     screen.blit(name_word_render_two, ((SZEROKOSC - szerokosc_name_two) / 2, 200), )
 
@@ -280,12 +280,18 @@ def name (screen, event_l):
             if event.key == pygame.K_BACKSPACE:
                 if p1_name_set == False:
                     n_player1 = n_player1[0:-1]
-                elif p2_name_set == False:
-                    n_player2 = n_player2[0:-1]
-
             else:
                 n_player1 += event.unicode
                 n_player1 = n_player1[0:10]
+
+            if event.key == pygame.K_BACKSPACE:
+                if p2_name_set == False:
+                    n_player2 = n_player2[0:-1]
+            else:
+                n_player2 += event.unicode
+                n_player2 = n_player1[0:10]
+
+
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             possition = pygame.mouse.get_pos()
             if przycisk_akcept.collidepoint(possition):
@@ -300,6 +306,9 @@ def name (screen, event_l):
     n_PLAYER_1 = font3.render(n_player1, True, 'white')
     szerokosc_n_p_1 = n_PLAYER_1.get_width()
     screen.blit(n_PLAYER_1, (310,325) )
+    n_PLAYER_2 = font3.render(n_player2, True, 'white')
+    szerokosc_n_p_2 = n_PLAYER_2.get_width()
+    screen.blit(n_PLAYER_2, (680,325) )
 
 
 
