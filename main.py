@@ -127,6 +127,12 @@ przycisk_akcept = pygame.rect.Rect(
     szerokosc_przycisku,
     wyskosc_przycisku)
 
+przycisk_replay = pygame.rect.Rect(
+    SZEROKOSC /2 - szerokosc_przycisku,
+    50,
+    szerokosc_przycisku,
+    wyskosc_przycisku)
+
 def show_globby (screen:pygame.Surface, event_l):
     global tryb_gry, wylacz_gre
 
@@ -276,20 +282,22 @@ def name (screen, event_l):
     screen.blit(akcept_word_render, akcept_rect, )
 
     for event in event_l:
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_BACKSPACE:
-                if p1_name_set == False:
-                    n_player1 = n_player1[0:-1]
-            else:
-                n_player1 += event.unicode
-                n_player1 = n_player1[0:10]
 
-            if event.key == pygame.K_BACKSPACE:
-                if p2_name_set == False:
-                    n_player2 = n_player2[0:-1]
-            else:
-                n_player2 += event.unicode
-                n_player2 = n_player1[0:10]
+        if p1_name_set == False:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                        n_player1 = n_player1[0:-1]
+                else:
+                    n_player1 += event.unicode
+                    n_player1 = n_player1[0:10]
+
+        elif p2_name_set == False:
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE and p1_name_set == True:
+                        n_player2 = n_player2[0:-1]
+                else:
+                    n_player2 += event.unicode
+                    n_player2 = n_player2[0:10]
 
 
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -345,6 +353,19 @@ def game(screen):
         ROZMIAR_PILECZKI,
         ROZMIAR_PILECZKI)
     pygame.draw.rect(screen, 'red', pileczka)
+
+    pygame.draw.rect(screen, 'white', przycisk_replay)
+    replay_word_render = font3.render("replay", True, 'black')
+    szerokosc_replay = replay_word_render.get_width()
+    wysokosc_replay = replay_word_render.get_height()
+    screen.blit(replay_word_render,
+                (przycisk_three.centerx - szerokosc_replay / 2, przycisk_replay.centery - wysokosc_replay / 2), )
+    if False:
+        points_left = 0
+        points_right = 0
+        # -1 HP od gracza z mniejszą ilością punktów.
+        #piłka na środek
+
 
     # Wyświetlanie nicków i punktów
     gracz_lewo_name_render = font.render(f'{nazwa_gracza_lewo} Points: {points_left}', True, 'white')
