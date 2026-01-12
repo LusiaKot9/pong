@@ -1,6 +1,6 @@
 import random
 import pygame
-
+import pygame_emojis
 
 pygame.init()
 
@@ -8,6 +8,8 @@ pygame.init()
 font = pygame.font.Font(size = 60)
 font2 = pygame.font.Font(size = 150)
 font3 = pygame.font.Font(size = 40)
+emoji_size = (40,40)
+fire_emoji = pygame_emojis.load_emoji('🔥',emoji_size)
 
 #utawienie trybu gry
 tryb_gry = "lobby"  # lobby, game, score, end
@@ -34,12 +36,13 @@ ROZMIAR_PILECZKI = 20
 polozenie_pileczki_y = (WYSOKOSC / 2) - (ROZMIAR_PILECZKI / 2)  # Na jakiej wyskości piłeczka się znajduje
 polozenie_pileczki_x = (SZEROKOSC / 2) - (ROZMIAR_PILECZKI / 2)  # Jak daleko od ściany piłeczka się znajduje
 
+tryb_spacja = False
 
 # Ustawienia poziomu trudności (szybkość piłeczki i ilość HP)
 """
 Żeby można było wybrać poziom trudności klikając w ekranie lobby, musimy przenieść ten kod do nowej funkcji
 """
-
+#M&M no i ziemniak
 
 
 
@@ -67,6 +70,8 @@ szerokosc_przycisku = 200
 wyskosc_przycisku = 80
 odstepy_miedzy_przyciskami = 30
 odstep_przycisku_od_sciany = 155
+
+replay = False
 
 
 ################================---------------- EKRANY GRY ----------------================################
@@ -121,14 +126,14 @@ przycisk_four = pygame.rect.Rect(
     szerokosc_przycisku,
     wyskosc_przycisku)
 
-przycisk_akcept = pygame.rect.Rect(
+przycisk_accept = pygame.rect.Rect(
     SZEROKOSC /2 - szerokosc_przycisku,
     500,
     szerokosc_przycisku,
     wyskosc_przycisku)
 
 przycisk_replay = pygame.rect.Rect(
-    SZEROKOSC /2 - szerokosc_przycisku,
+    SZEROKOSC /2 - szerokosc_przycisku /2,
     50,
     szerokosc_przycisku,
     wyskosc_przycisku)
@@ -206,26 +211,30 @@ def choose_difficulti_level(screen, event_l):
     wysokosc_one = one_word_render.get_height()
     screen.blit(one_word_render, (przycisk_one.centerx - szerokosc_one / 2, przycisk_one.centery - wysokosc_one / 2), )
 
-    pygame.draw.rect(screen, kolor_przyciskow, przycisk_two)
+    pygame.draw.rect(screen, 'yellow', przycisk_two)
     two_word_render = font3.render("Medium", True, 'black')
     szerokosc_two = two_word_render.get_width()
     wysokosc_two = two_word_render.get_height()
     screen.blit(two_word_render, (przycisk_two.centerx - szerokosc_two / 2, przycisk_two.centery - wysokosc_two / 2), )
 
-    pygame.draw.rect(screen, kolor_przyciskow, przycisk_three)
+    pygame.draw.rect(screen, 'orange', przycisk_three)
     three_word_render = font3.render("Hard", True, 'black')
     szerokosc_three = three_word_render.get_width()
     wysokosc_three = three_word_render.get_height()
     screen.blit(three_word_render, (przycisk_three.centerx - szerokosc_three / 2, przycisk_three.centery - wysokosc_three / 2), )
 
-    pygame.draw.rect(screen, kolor_przyciskow, przycisk_four)
+    pygame.draw.rect(screen, "red", przycisk_four)
     four_word_render = font3.render("HELL", True, 'black')
     szerokosc_four = four_word_render.get_width()
     wysokosc_four = four_word_render.get_height()
     screen.blit(four_word_render, (przycisk_four.centerx - szerokosc_four / 2, przycisk_four.centery - wysokosc_four / 2), )
+    screen.blit(fire_emoji, (przycisk_four.centerx - szerokosc_four / 2, przycisk_four.centery - wysokosc_four / 2), )
+
     # inicjowanie leveli
     predkosc_baza_x = random.choice([-1, 1])
     predkosc_baza_y = random.randint(-1, 1)
+
+
 
     for event in event_l:
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -260,7 +269,7 @@ def name (screen, event_l):
     szerokosc_name = name_word_render.get_width()
     screen.blit(name_word_render, ((SZEROKOSC - szerokosc_name) / 2,100), )
 
-    name_word_render_two = font3.render("click akcept to write the second players name and to exit", True, 'white')
+    name_word_render_two = font3.render("click accept to write the second players name and to exit", True, 'white')
     szerokosc_name_two = name_word_render_two.get_width()
     screen.blit(name_word_render_two, ((SZEROKOSC - szerokosc_name_two) / 2, 200), )
 
@@ -276,13 +285,12 @@ def name (screen, event_l):
     pygame.draw.line(screen, "white", (680, 350), (880, 350))
 
 
-    pygame.draw.rect(screen, 'white', przycisk_akcept)
-    akcept_word_render = font3.render("Akcept".upper(), True, 'black')
-    akcept_rect = akcept_word_render.get_rect(center=przycisk_akcept.center)
-    screen.blit(akcept_word_render, akcept_rect, )
+    pygame.draw.rect(screen, 'white', przycisk_accept)
+    accept_word_render = font3.render("Accept".upper(), True, 'black')
+    accept_rect = accept_word_render.get_rect(center=przycisk_accept.center)
+    screen.blit(accept_word_render, accept_rect, )
 
     for event in event_l:
-
         if p1_name_set == False:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
@@ -302,7 +310,7 @@ def name (screen, event_l):
 
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             possition = pygame.mouse.get_pos()
-            if przycisk_akcept.collidepoint(possition):
+            if przycisk_accept.collidepoint(possition):
                 if p1_name_set == False:
                     nazwa_gracza_lewo = n_player1
                     p1_name_set = True
@@ -325,11 +333,15 @@ def name (screen, event_l):
 
 
 # Ekran widoku gry
-def game(screen):
+def game(screen, event_l):
     global paletka_lewa_y, paletka_prawa_y
     global polozenie_pileczki_x, polozenie_pileczki_y
     global points_left, points_right, HP_left, HP_right
     global predkosc_x, predkosc_y
+    global replay
+    global tryb_spacja
+
+
 
 
     pygame.draw.rect(screen, 'white', linia)
@@ -354,17 +366,39 @@ def game(screen):
         ROZMIAR_PILECZKI)
     pygame.draw.rect(screen, 'red', pileczka)
 
-    pygame.draw.rect(screen, 'white', przycisk_replay)
-    replay_word_render = font3.render("replay", True, 'black')
-    szerokosc_replay = replay_word_render.get_width()
-    wysokosc_replay = replay_word_render.get_height()
-    screen.blit(replay_word_render,
-                (przycisk_three.centerx - szerokosc_replay / 2, przycisk_replay.centery - wysokosc_replay / 2), )
-    if False:
-        points_left = 0
-        points_right = 0
-        # -1 HP od gracza z mniejszą ilością punktów.
-        #piłka na środek
+    # przycisk replay
+    for event in event_l:
+        if event.type == pygame.KEYDOWN:
+
+            if event.key == pygame.K_SPACE:
+                tryb_spacja = not tryb_spacja
+
+
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            possition = pygame.mouse.get_pos()
+            if przycisk_replay.collidepoint(possition):
+                replay = False
+                if points_left >= 5:
+                    HP_right -= 1
+                elif points_right >= 5:
+                    HP_left -= 1
+                points_right = 0
+                points_left = 0
+                polozenie_pileczki_x = SZEROKOSC /2 - ROZMIAR_PILECZKI /2
+                polozenie_pileczki_y = WYSOKOSC /2 - ROZMIAR_PILECZKI  /2
+
+
+
+    if points_left >= 20 or points_right >= 20:
+        replay = True
+
+        pygame.draw.rect(screen, 'white', przycisk_replay)
+        replay_word_render = font3.render("REPLAY", True, 'black')
+        szerokosc_replay = replay_word_render.get_width()
+        wysokosc_replay = replay_word_render.get_height()
+        screen.blit(replay_word_render,
+                    (przycisk_replay.centerx - szerokosc_replay / 2, przycisk_replay.centery - wysokosc_replay / 2), )
+
 
 
     # Wyświetlanie nicków i punktów
@@ -382,6 +416,14 @@ def game(screen):
     screen.blit(gracz_prawo_HP_render, (SZEROKOSC - szerokosc_HP_gracza_prawo - 10, 60), )
     screen.blit(gracz_lewo_HP_render, (DYSTANS_PALETKI_OD_SCIANY, 60), )
 
+    if replay == True:
+        return
+
+#ziemniek
+
+    if tryb_spacja == True:
+        return
+    #I'm a pancake and potato
 
     # Poruszanie paletkami
     klawa = pygame.key.get_pressed()
@@ -401,6 +443,9 @@ def game(screen):
         paletka_lewa_y += 8
         if paletka_lewa_y >= 550 - DLUGOSC_PALETKI:
             paletka_lewa_y = 550 - DLUGOSC_PALETKI
+
+
+
 
     # Aktualizacja położenia piłeczki
     polozenie_pileczki_x += predkosc_x
@@ -424,6 +469,7 @@ def game(screen):
             polozenie_pileczki_y >= paletka_lewa_y:
         predkosc_x = predkosc_x * -1
         points_left += 1
+        polozenie_pileczki_x = DYSTANS_PALETKI_OD_SCIANY + SZEROKOSC_PALETKI
 
     # Kolizja piłeczki z prawą paletką
     if polozenie_pileczki_x <= SZEROKOSC - DYSTANS_PALETKI_OD_SCIANY:  # Pileczka po lewo od prawej paletki
@@ -432,6 +478,8 @@ def game(screen):
                 if polozenie_pileczki_y + ROZMIAR_PILECZKI >= paletka_prawa_y:  # Czy piłeczka nie jest powyżej paletki
                     predkosc_x = predkosc_x * -1
                     points_right += 1
+                    polozenie_pileczki_x =  SZEROKOSC - DYSTANS_PALETKI_OD_SCIANY - SZEROKOSC_PALETKI - ROZMIAR_PILECZKI
+
 
 
 
@@ -458,7 +506,7 @@ while wylacz_gre == False:
                 tryb_gry = "lobby"
 
     if tryb_gry == "game":
-        game(screen)
+        game(screen,event_l)
     elif tryb_gry == 'lobby':
         show_globby(screen, event_l)
     elif tryb_gry == 'CDL':
