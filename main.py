@@ -1,6 +1,6 @@
 import random
 import pygame
-import pygame_emojis
+
 
 pygame.init()
 
@@ -9,8 +9,9 @@ font = pygame.font.Font(size = 60)
 font2 = pygame.font.Font(size = 150)
 font3 = pygame.font.Font(size = 40)
 emoji_size = (40,40)
-fire_emoji = pygame_emojis.load_emoji('🔥',emoji_size)
-
+fire_emoji = pygame.image.load('FIRE EMOJI.jpg')
+fire_emoji.set_colorkey('white')
+fire_emoji = pygame.transform.scale(fire_emoji,emoji_size)
 #utawienie trybu gry
 tryb_gry = "lobby"  # lobby, game, score, end
 wylacz_gre = False
@@ -205,6 +206,8 @@ def choose_difficulti_level(screen, event_l):
     screen.blit(cdl_word_render, ((SZEROKOSC - szerokosc_cdl) / 2, 100), )
     kolor_przyciskow = "white"
 
+    # screen.blit(fire_emoji,(0,0))
+
     pygame.draw.rect(screen, kolor_przyciskow, przycisk_one)
     one_word_render = font3.render("Easy", True, 'black')
     szerokosc_one = one_word_render.get_width()
@@ -228,7 +231,13 @@ def choose_difficulti_level(screen, event_l):
     szerokosc_four = four_word_render.get_width()
     wysokosc_four = four_word_render.get_height()
     screen.blit(four_word_render, (przycisk_four.centerx - szerokosc_four / 2, przycisk_four.centery - wysokosc_four / 2), )
-    screen.blit(fire_emoji, (przycisk_four.centerx - szerokosc_four / 2, przycisk_four.centery - wysokosc_four / 2), )
+    hell_x = przycisk_four.centerx - szerokosc_four / 2
+    left_fire_x = ((hell_x - przycisk_four.x - emoji_size[0]) /2) + przycisk_four.x
+    prawy_rog_x = przycisk_four.x + szerokosc_przycisku
+    right_fire_x = (prawy_rog_x-((hell_x - przycisk_four.x - emoji_size[0]) /2)-emoji_size[0])
+
+    screen.blit(fire_emoji, (left_fire_x, przycisk_four.centery - wysokosc_four *(3/4)), )
+    screen.blit(fire_emoji, (right_fire_x, przycisk_four.centery - wysokosc_four *(3/4)), )
 
     # inicjowanie leveli
     predkosc_baza_x = random.choice([-1, 1])
