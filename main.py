@@ -35,29 +35,20 @@ linia = pygame.rect.Rect((SZEROKOSC / 2) - (GRUBOSC_LINII / 2), 0, GRUBOSC_LINII
 # Ustawienia piłeczki
 ROZMIAR_PILECZKI = 20
 polozenie_pileczki_y = (WYSOKOSC / 2) - (ROZMIAR_PILECZKI / 2)  # Na jakiej wyskości piłeczka się znajduje
-polozenie_pileczki_x = (SZEROKOSC / 2) - (ROZMIAR_PILECZKI / 2)  # Jak daleko od ściany piłeczka się znajduje
-
+polozenie_pileczki_x = (SZEROKOSC / 2) - (ROZMIAR_PILECZKI / 2)  # Jak daleko od ściany piłeczka się znajduje#
+# tryb_spacja służy do zatrzymywania gry
 tryb_spacja = False
 
 # Ustawienia poziomu trudności (szybkość piłeczki i ilość HP)
-"""
-Żeby można było wybrać poziom trudności klikając w ekranie lobby, musimy przenieść ten kod do nowej funkcji
-"""
+
 #M&M no i ziemniak
-
-
 
 predkosc_x = 1
 predkosc_y = 1
 
-
-"""Aż dotąd"""
-
 # Ustawienia graczy
 nazwa_gracza_lewo = "Player 1"
 nazwa_gracza_prawo = "Player 2"
-# nazwa_gracza_lewo = input("user name from left side")
-# nazwa_gracza_prawo = input("user name from right side")
 points_left = 0
 points_right = 0
 
@@ -139,6 +130,7 @@ przycisk_replay = pygame.rect.Rect(
     szerokosc_przycisku,
     wyskosc_przycisku)
 
+#globby to menu ekranu głównego(lobby)
 def show_globby (screen:pygame.Surface, event_l):
     global tryb_gry, wylacz_gre
 
@@ -176,13 +168,13 @@ def show_globby (screen:pygame.Surface, event_l):
             possition = pygame.mouse.get_pos()
             if przycisk_game.collidepoint(possition):
                 tryb_gry = 'game'
-                print('ziemniak')
+                #print('ziemniak') #debug
 
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             possition = pygame.mouse.get_pos()
             if przycisk_esc.collidepoint(possition):
                 wylacz_gre = True
-                print('ziemniak')
+                #print('ziemniak') #debug
 
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             possition = pygame.mouse.get_pos()
@@ -193,11 +185,12 @@ def show_globby (screen:pygame.Surface, event_l):
             possition = pygame.mouse.get_pos()
             if przycisk_CAN.collidepoint(possition):
                 tryb_gry = 'name'
-                print('ziemniak')
+                #print('ziemniak') #debug
 
 HP_left = 6
 HP_right = 6
 def choose_difficulti_level(screen, event_l):
+    #global dlatego że są zdefiniowane poza mają funkcją ale będę wprowadzać do nich zmiany
     global predkosc_y,predkosc_x,HP_left,HP_right,tryb_gry
 
     screen.fill('black')
@@ -206,7 +199,6 @@ def choose_difficulti_level(screen, event_l):
     screen.blit(cdl_word_render, ((SZEROKOSC - szerokosc_cdl) / 2, 100), )
     kolor_przyciskow = "white"
 
-    # screen.blit(fire_emoji,(0,0))
 
     pygame.draw.rect(screen, kolor_przyciskow, przycisk_one)
     one_word_render = font3.render("Easy", True, 'black')
@@ -323,16 +315,14 @@ def name (screen, event_l):
                 if p1_name_set == False:
                     nazwa_gracza_lewo = n_player1
                     p1_name_set = True
-                    print('gotowany ziemniak')
+                    #print('gotowany ziemniak') #debug
                 else:
                     nazwa_gracza_prawo = n_player2
                     p2_name_set = True
                     tryb_gry = 'lobby'
     n_PLAYER_1 = font3.render(n_player1, True, 'white')
-    szerokosc_n_p_1 = n_PLAYER_1.get_width()
     screen.blit(n_PLAYER_1, (310,325) )
     n_PLAYER_2 = font3.render(n_player2, True, 'white')
-    szerokosc_n_p_2 = n_PLAYER_2.get_width()
     screen.blit(n_PLAYER_2, (680,325) )
 
 
@@ -349,8 +339,6 @@ def game(screen, event_l):
     global predkosc_x, predkosc_y
     global replay
     global tryb_spacja
-
-
 
 
     pygame.draw.rect(screen, 'white', linia)
@@ -382,10 +370,9 @@ def game(screen, event_l):
             if event.key == pygame.K_SPACE:
                 tryb_spacja = not tryb_spacja
 
-
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            possition = pygame.mouse.get_pos()
-            if przycisk_replay.collidepoint(possition):
+            position = pygame.mouse.get_pos()
+            if przycisk_replay.collidepoint(position):
                 replay = False
                 if points_left >= 5:
                     HP_right -= 1
@@ -395,8 +382,6 @@ def game(screen, event_l):
                 points_left = 0
                 polozenie_pileczki_x = SZEROKOSC /2 - ROZMIAR_PILECZKI /2
                 polozenie_pileczki_y = WYSOKOSC /2 - ROZMIAR_PILECZKI  /2
-
-
 
     if points_left >= 20 or points_right >= 20:
         replay = True
